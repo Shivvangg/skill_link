@@ -1,4 +1,5 @@
-import 'package:flutter/cupertino.dart';
+// ignore_for_file: sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
 import 'package:skill_link/common/data.dart';
 
@@ -36,7 +37,7 @@ Widget profileHeaderWidget(BuildContext context) {
                         ),
                       ),
                       Text(
-                        "Posts",
+                        "  Projects",
                         style: TextStyle(
                           fontSize: 15,
                           letterSpacing: 0.4,
@@ -57,7 +58,7 @@ Widget profileHeaderWidget(BuildContext context) {
                         ),
                       ),
                       Text(
-                        "Followers",
+                        "Connection",
                         style: TextStyle(
                           letterSpacing: 0.4,
                           fontSize: 15,
@@ -79,7 +80,7 @@ Widget profileHeaderWidget(BuildContext context) {
                         ),
                       ),
                       Text(
-                        "Following",
+                        "",
                         style: TextStyle(
                           letterSpacing: 0.4,
                           fontSize: 15,
