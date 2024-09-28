@@ -1,6 +1,9 @@
 // ignore_for_file: avoid_print
 
 import 'package:flutter/material.dart';
+import 'package:skill_link/common/custom_card.dart';
+
+import '../../model/chat_model.dart';
 
 class ChatScreen extends StatefulWidget {
   const ChatScreen({super.key});
@@ -10,6 +13,12 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+
+  List<ChatModel> chats = [
+    ChatModel(name: "Shivang Pande", icon: "person.svg", isGroup: false, time: "4:00", currentMessage: "Jay Shree Ram"),
+    ChatModel(name: "Jeet Sheth", icon: "person.svg", isGroup: false, time: "4:00", currentMessage: "Jay Shree Krishna"),
+    ChatModel(name: "Project Alpha", icon: "groups.svg", isGroup: true, time: "4:00", currentMessage: "Hello Everybody")
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +48,10 @@ class _ChatScreenState extends State<ChatScreen> {
         onPressed: () {}, 
         child: const Icon(Icons.chat),
       ),
-      body: Container(),
+      body: ListView.builder(
+        itemCount: chats.length,
+        itemBuilder: (context, index) => Customcard(chatModel: chats[index]),
+      ),
     );
   }
 }
