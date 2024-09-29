@@ -1,5 +1,6 @@
-// ignore_for_file: deprecated_member_use, sized_box_for_whitespace, sort_child_properties_last
+// ignore_for_file: deprecated_member_use, sized_box_for_whitespace, sort_child_properties_last, avoid_print, prefer_final_fields
 
+import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:skill_link/model/chat_model.dart';
@@ -13,6 +14,20 @@ class IndividualChatpage extends StatefulWidget {
 }
 
 class _IndividualChatpageState extends State<IndividualChatpage> {
+  bool show = false;
+  FocusNode focusNode = FocusNode();
+  TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        show = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -93,64 +108,161 @@ class _IndividualChatpageState extends State<IndividualChatpage> {
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: Stack(
-          children: [
-            ListView(),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                children: [
-                  Container(
-                    child: Card(
-                      margin:
-                          const EdgeInsets.only(left: 2, right: 2, bottom: 11),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(25),
-                      ),
-                      child: TextFormField(
-                        textAlignVertical: TextAlignVertical.center,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 5,
-                        minLines: 1,
-                        decoration: InputDecoration(
-                          border: InputBorder.none,
-                          hintText: "Type a message",
-                          prefixIcon: IconButton(
-                            icon: const Icon(
-                              Icons.emoji_emotions,
+        child: WillPopScope(
+          onWillPop: () {
+            if (show) {
+              show = false;
+            } else {
+              Navigator.pop(context);
+            }
+            return Future.value(false);
+          },
+          child: Stack(
+            children: [
+              ListView(),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          child: Card(
+                            margin: const EdgeInsets.only(
+                                left: 2, right: 2, bottom: 11),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
                             ),
-                            onPressed: () {},
-                          ),
-                          suffixIcon: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                  onPressed: null,
-                                  icon: Icon(Icons.attach_file)
+                            child: TextFormField(
+                              controller: _controller,
+                              focusNode: focusNode,
+                              textAlignVertical: TextAlignVertical.center,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 5,
+                              minLines: 1,
+                              decoration: InputDecoration(
+                                border: InputBorder.none,
+                                hintText: "Type a message",
+                                prefixIcon: IconButton(
+                                  icon: const Icon(
+                                    Icons.emoji_emotions_outlined,
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      focusNode.unfocus();
+                                      focusNode.canRequestFocus = false;
+                                      show = !show;
+                                    });
+                                  },
+                                ),
+                                suffixIcon: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                        onPressed: () {
+                                          showModalBottomSheet(
+                                            backgroundColor: Colors.transparent,
+                                              context: context,
+                                              builder: (builder) =>
+                                                  bottomsheet());
+                                        },
+                                        icon: const Icon(Icons.attach_file)),
+                                    IconButton(
+                                        onPressed: () {},
+                                        icon: const Icon(Icons.camera_alt)),
+                                  ],
+                                ),
+                                contentPadding: const EdgeInsets.all(5),
                               ),
-                              IconButton(
-                                  onPressed: null, 
-                                  icon: Icon(Icons.camera_alt)
-                              ),
-                            ],
+                            ),
                           ),
-                          contentPadding: const EdgeInsets.all(5),
+                          width: MediaQuery.of(context).size.width - 60,
                         ),
-                      ),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              bottom: 8, right: 5, left: 2),
+                          child: CircleAvatar(
+                            radius: 25,
+                            child: IconButton(
+                                icon: const Icon(
+                                  Icons.mic,
+                                  color: Colors.white,
+                                ),
+                                onPressed: () {}),
+                          ),
+                        )
+                      ],
                     ),
-                    width: MediaQuery.of(context).size.width - 60,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8, right: 5, left: 2),
-                    child: CircleAvatar(
-                      radius: 25,
-                      child: IconButton(icon: const Icon(Icons.mic, color: Colors.white,), onPressed: () {}),
-                    ),
-                  )
+                    show ? emojiSelect() : Container(),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget emojiSelect() {
+    return EmojiPicker(onEmojiSelected: (category, emoji) {
+      print(emoji);
+      setState(() {
+        _controller.text = _controller.text + emoji.emoji;
+      });
+    });
+  }
+
+  Widget iconcreation(IconData icon, Color color, String text){
+    return  InkWell(
+      onTap: () {},
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor: color,
+            child: Icon(icon, size: 29, color: Colors.white),
+          ),
+          const SizedBox(height: 5),
+          Text(text, style: const TextStyle(fontSize: 12)),
+        ],
+      ),
+    );
+  }
+
+  Widget bottomsheet() {
+    return Container(
+      height: 278,
+      width: MediaQuery.of(context).size.width,
+      child:  Card(
+        margin: const EdgeInsets.all(18),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+          child: Column(
+            children: [ 
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconcreation(Icons.insert_drive_file, Colors.indigo, "Document"),
+                  const SizedBox(width: 40),
+                  iconcreation(Icons.camera_alt, Colors.pink, "Camera"),
+                  const SizedBox(width: 40),
+                  iconcreation(Icons.insert_photo, Colors.purple, "Gallery"),
                 ],
               ),
-            ),
-          ],
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  iconcreation(Icons.headset, Colors.orange, "Audio"),
+                  const SizedBox(width: 40),
+                  iconcreation(Icons.location_pin, Colors.teal, "Location"),
+                  const SizedBox(width: 40),
+                  iconcreation(Icons.person, Colors.blue, "Contact"),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );

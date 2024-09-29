@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:skill_link/common/custom_card.dart';
+import 'package:skill_link/screens/user/select_chat.dart';
 
 import '../../model/chat_model.dart';
 
@@ -15,9 +16,9 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
 
   List<ChatModel> chats = [
-    ChatModel(name: "Shivang Pande", icon: "person.svg", isGroup: false, time: "4:00", currentMessage: "Jay Shree Ram"),
-    ChatModel(name: "Jeet Sheth", icon: "person.svg", isGroup: false, time: "4:00", currentMessage: "Jay Shree Krishna"),
-    ChatModel(name: "Project Alpha", icon: "groups.svg", isGroup: true, time: "4:00", currentMessage: "Hello Everybody")
+    ChatModel(name: "Shivang Pande", icon: "person.svg", isGroup: false, time: "4:00", currentMessage: "Jay Shree Ram", status: "Just Fine"),
+    ChatModel(name: "Jeet Sheth", icon: "person.svg", isGroup: false, time: "4:00", currentMessage: "Jay Shree Krishna", status: "Just Fine"),
+    ChatModel(name: "Project Alpha", icon: "groups.svg", isGroup: true, time: "4:00", currentMessage: "Hello Everybody", status: "Just Fine")
   ];
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,9 @@ class _ChatScreenState extends State<ChatScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {}, 
+        onPressed: () {
+          Navigator.push(context, MaterialPageRoute(builder: (builder) => const SelectChat()));
+        }, 
         child: const Icon(Icons.chat),
       ),
       body: ListView.builder(
